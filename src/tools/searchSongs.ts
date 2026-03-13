@@ -1,17 +1,14 @@
-import { z } from "zod";
-import { spotifyApi } from "../spotify.js";
+import { spotifyApi, authenticate } from "../spotify.js";
 
-export async function searchSongs(query: string) {
+export async function searchSongs(query) {
 
-  const result = await spotifyApi.searchTracks(query)
+  await authenticate();
 
-  return result.body.tracks?.items.map(track => ({
-    id: track.id,
-    uri: track.uri,
+  const result = await spotifyApi.searchTracks(query);
+
+  return result.body.tracks.items.map(track => ({
     name: track.name,
-    artist: track.artists[0].name
-  }))
-
+    artist: track.artists[0].name,
+    uri: track.uri
+  }));
 }
-
-

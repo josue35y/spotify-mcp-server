@@ -1,12 +1,11 @@
-import "dotenv/config";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { spotifyApi, authenticate } from "./spotify.js";
-import "dotenv/config"
 import { searchSongs } from "./tools/searchSongs.js"
 import { createPlaylist } from "./tools/createPlaylist.js"
-
+import dotenv from "dotenv";
+dotenv.config({ quiet: true });
 
 
 const server = new McpServer({
@@ -20,6 +19,7 @@ const server = new McpServer({
 
 server.tool(
   "searchSongs",
+  "Search songs on Spotify",
   { query: z.string() },
   async ({ query }) => {
 
@@ -67,6 +67,7 @@ server.tool(
 
 server.tool(
   "create_playlist",
+  "Create a Spotify playlist",
   { name: z.string() },
   async ({ name }) => {
 
@@ -86,7 +87,14 @@ server.tool(
 
 
 async function start() {
-  await authenticate();
+
+  try {
+    console.error("Authenticating with Spotify...");
+    await authenticate();
+    console.error("Spotify authenticated");
+  } catch (error) {
+    console.error("Spotify authentication failed:", error);
+  }
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
