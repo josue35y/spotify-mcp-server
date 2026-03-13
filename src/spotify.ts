@@ -1,5 +1,8 @@
 import SpotifyWebApi from "spotify-web-api-node";
-import "dotenv/config";
+import dotenv from "dotenv";
+
+// Load .env relative to this file so it works even when process.cwd() is not the project folder.
+dotenv.config({ path: new URL("../.env", import.meta.url) });
 
 const clientId = process.env.SPOTIFY_CLIENT_ID?.trim();
 const clientSecret = process.env.SPOTIFY_CLIENT_SECRET?.trim();
